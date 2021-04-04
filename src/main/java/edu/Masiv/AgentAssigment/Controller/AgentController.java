@@ -1,11 +1,11 @@
 package edu.Masiv.AgentAssigment.Controller;
 
 import edu.Masiv.AgentAssigment.Model.Agent;
-import edu.Masiv.AgentAssigment.Repository.AgentRepository;
+import edu.Masiv.AgentAssigment.Repository.IAgentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @CrossOrigin
@@ -13,35 +13,54 @@ import java.util.List;
 public class AgentController {
 
     @Autowired
-    private AgentRepository ar;
+    private IAgentRepository ar;
 
-    @PostMapping
-    public Agent NewAgent(@RequestBody Agent agent){
-        ar.NewAgent(agent);
-        return agent;
+    @PostMapping("/newAgent")
+    public ResponseEntity<?> NewAgent(@RequestBody Agent agent){
+        try{
+            ar.NewAgent(agent);
+            return new ResponseEntity<>(agent,HttpStatus.CREATED);
+        }
+        catch (Exception ex){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
     }
+
     @GetMapping
-    public List<Agent> list(){
-        return ar.findAll();
+    public ResponseEntity<?> getAgents(){
+        try{
+            return new ResponseEntity<>(ar.getAgents(),HttpStatus.ACCEPTED);
+        }
+        catch (Exception ex){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
     }
 
-    @GetMapping("/{id}")
-    public Agent getAgent(@PathVariable int id){
-        return ar.findById(id);
+    @PutMapping("/assign/{PriorityRank}")
+    public ResponseEntity<?> AssignAgent(@PathVariable int PriorityRank){
+        try{
+            int Agent = ar.AssignAgents(PriorityRank);
+            if(Agent==-1){
+                return new ResponseEntity<>("No agents available",HttpStatus.OK);
+            }
+            else{
+                return new ResponseEntity<>(Agent,HttpStatus.ACCEPTED);
+            }
+        }
+        catch (Exception ex){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
     }
 
-    @PutMapping("/{id}")
-    public Agent ReleaseAgent(@RequestBody Agent agent,@PathVariable int id){
-        ar.delete(id);
-        if (!agent.isAvailability())
-        agent.setAvailability(true);
-        ar.ReleaseAgent(agent);
-        return agent;
-    }
+    @PutMapping("/release/{id}")
+    public ResponseEntity<?> ReleaseAgent(@PathVariable int id){
+        try{
+            ar.ReleaseAgents(id);
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        }
+        catch (Exception ex){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
 
-    @DeleteMapping("/{id}")
-    public int deleteAgent(@PathVariable int id){
-        ar.delete(id);
-        return id;
     }
 }
