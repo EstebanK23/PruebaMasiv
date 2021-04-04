@@ -25,7 +25,6 @@ public class AgentRepository implements IAgentRepository {
         hashOperations.put(AGENT_KEY,agent.getId(),agent);
     }
 
-
     @Override
     public List<Agent> getAgents() {
         return hashOperations.values(AGENT_KEY);

@@ -22,14 +22,14 @@ public class AgentController {
             return new ResponseEntity<>(agent,HttpStatus.CREATED);
         }
         catch (Exception ex){
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
         }
     }
 
     @GetMapping
     public ResponseEntity<?> getAgents(){
         try{
-            return new ResponseEntity<>(ar.getAgents(),HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(ar.getAgents(),HttpStatus.OK);
         }
         catch (Exception ex){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -48,7 +48,7 @@ public class AgentController {
             }
         }
         catch (Exception ex){
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(null, HttpStatus.NOT_MODIFIED);
         }
     }
 
@@ -59,7 +59,7 @@ public class AgentController {
             return new ResponseEntity<>(HttpStatus.ACCEPTED);
         }
         catch (Exception ex){
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(null, HttpStatus.NOT_MODIFIED);
         }
 
     }
